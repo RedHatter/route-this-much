@@ -5,8 +5,9 @@ export const ROUTER_CONTEXT = {}
 
 export const path = writable(window.location.pathname)
 
-export function navigate(_path) {
-  history.pushState(null, '', _path)
+export function navigate(_path, replace = false) {
+  const fn = replace ? 'replaceState' : 'pushState'
+  history[fn](null, '', _path)
   path.set(window.location.pathname)
 }
 

@@ -26,7 +26,7 @@
   $: _ctx.base.set(path.replace(/\(?\/[^/]*\*[^/]*$/, '/'))
   $: $route.pattern =
     path !== '' && new UrlPattern(path.startsWith('/') ? path : $base + path)
-  $: if ($route.params !== null && redirect) navigate(redirect)
+  $: if ($route.params !== null && redirect) navigate(redirect, true)
   $: router = { params: $route.params, path: $currentPath }
 
   let props = {}
