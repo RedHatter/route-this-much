@@ -1,10 +1,14 @@
 <script>
-  import { Router, Route, Link } from '../../src/index.js'
+  import { Router, Route, Link, link } from '../../src/index.js'
 </script>
 
 <style>
   :global(a.active) {
     font-weight: bold;
+  }
+
+  :global(a.partial) {
+    font-style: italic;
   }
 </style>
 
@@ -21,7 +25,7 @@
     </li>
   </ul>
   <Route path="/one/*">
-    <Link href="sub">Sub route</Link>
+    <b use:link={'nested'}>Nested route</b>
     <h1>One</h1>
     <p>
       Renders for any path beginning with
