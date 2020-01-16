@@ -5,6 +5,8 @@ export const ROUTER_CONTEXT = {}
 
 export const path = writable(window.location.pathname)
 
+window.addEventListener('popstate', e => path.set(window.location.pathname))
+
 export function navigate(_path, replace = false) {
   const fn = replace ? 'replaceState' : 'pushState'
   history[fn](null, '', _path)
