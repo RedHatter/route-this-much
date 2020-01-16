@@ -9,8 +9,9 @@
 </script>
 
 <a
-  {href}
+  {...$$props}
   on:click|preventDefault={() => navigate(href)}
-  class:active={part.startsWith(href)}>
+  class:active={part == href}
+  class:partial={part != href && part.startsWith(href)}>
   <slot />
 </a>
