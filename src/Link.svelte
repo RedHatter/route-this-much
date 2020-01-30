@@ -8,6 +8,7 @@
     : $path.substring($path.lastIndexOf('/') + 1)
 </script>
 
+<!-- svelte-ignore a11y-missing-attribute -->
 <a
   {...$$props}
   on:click|preventDefault={() => navigate(href)}
