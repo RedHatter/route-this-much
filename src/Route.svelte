@@ -23,9 +23,12 @@
     _ctx.destroy()
   })
 
-  $: _ctx.base.set(path.replace(/\(?\/[^/]*\*[^/]*$/, '/'))
-  $: $route.pattern =
-    path !== '' && new UrlPattern(path.startsWith('/') ? path : $base + path)
+  let _path
+  $: {
+    _path = path.startsWith('/') ? path : $base + path
+    _ctx.base.set(_path.replace(/\(?\/[^/]*\*[^/]*$/, '/'))
+  }
+  $: $route.pattern = path !== '' && new UrlPattern(_path)
   $: if ($route.params !== null && redirect) navigate(redirect, true)
   $: router = { params: $route.params, path: $currentPath }
 
