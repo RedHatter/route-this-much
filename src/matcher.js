@@ -7,10 +7,18 @@ export const path = writable(window.location.pathname)
 
 window.addEventListener('popstate', e => path.set(window.location.pathname))
 
+let hasPrevious = false
+
 export function navigate(_path, replace = false) {
+  hasPrevious = true
   const fn = replace ? 'replaceState' : 'pushState'
   history[fn](null, '', _path)
   path.set(window.location.pathname)
+}
+
+export function back() {
+  if (hasPrevious) history.back()
+  else navigate(window.location.pathname.replace(/[^/]+\/?$/, ''))
 }
 
 function match(list) {
