@@ -1,10 +1,10 @@
 import type { SvelteComponent } from "svelte"
+import type Route from "./Route.svelte"
+import type Noop from "./Noop.svelte"
 
 export * from "./path"
-export { default as path } from "./path"
 export * from "./Route.svelte"
-export { default as Route } from "./Route.svelte"
-export { default as Noop } from "./Noop.svelte"
+export { Route, Noop }
 
 export interface UrlPatternOptions {
     escapeChar?: string

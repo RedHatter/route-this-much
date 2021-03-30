@@ -1,5 +1,5 @@
 <script context="module">
-    import { setContext as _setContext, getContext as _getContext } from 'svelte'
+    import { setContext as _setContext, getContext as _getContext } from "svelte"
 
     const key = Symbol()
 
@@ -16,11 +16,11 @@
 </script>
 
 <script>
-    import UrlPattern from 'url-pattern'
-    import pathname, { navigate, noMatch } from './path'
-    import Noop from './Noop.svelte'
+    import UrlPattern from "url-pattern"
+    import { path as pathname, navigate, noMatch } from "./path"
+    import Noop from "./Noop.svelte"
 
-    import { tick } from 'svelte'
+    import { tick } from "svelte"
 
     const context = getContext()
 
@@ -45,7 +45,7 @@
     let promise
 
     // @ts-ignore
-    $: pattern = new UrlPattern(path, typeof path === 'string' ? options : groupNames)
+    $: pattern = new UrlPattern(path, typeof path === "string" ? options : groupNames)
     /** @type any */
     let params
     $: params = pattern.match($pathname)

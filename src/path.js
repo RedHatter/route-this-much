@@ -1,10 +1,8 @@
-import { writable } from 'svelte/store'
+import { writable } from "svelte/store"
 
-const path = writable(window.location.pathname)
+export const path = writable(window.location.pathname)
 export const hash = writable(window.location.hash)
 export const noMatch = writable(true)
-
-export default path
 
 // reset match
 path.subscribe(() => noMatch.set(true))
@@ -14,7 +12,7 @@ function update() {
     hash.set(window.location.hash)
 }
 
-window.addEventListener('popstate', update)
+window.addEventListener("popstate", update)
 
 let hasPrevious = false
 
@@ -37,19 +35,19 @@ export function onNavigate(fn) {
 export function navigate(href, replace = false) {
     if (!on_navigate(href)) return
     hasPrevious = true
-    const fn = replace ? 'replaceState' : 'pushState'
-    history[fn](null, '', href)
+    const fn = replace ? "replaceState" : "pushState"
+    history[fn](null, "", href)
     update()
 }
 
 export function back() {
     if (hasPrevious) history.back()
-    else navigate(window.location.pathname.replace(/[^/]+\/?$/, ''))
+    else navigate(window.location.pathname.replace(/[^/]+\/?$/, ""))
 }
 
 // intercept local links for the router
-window.addEventListener('click', event => {
-    const anchor = /** @type {Element} */ (event.target)?.closest('a')
+window.addEventListener("click", event => {
+    const anchor = /** @type {Element} */ (event.target)?.closest("a")
     const href = anchor?.href
 
     // partially lifted from roxiness/routify
