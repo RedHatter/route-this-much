@@ -1,19 +1,22 @@
-import * as fs from 'fs'
 import svelte from 'rollup-plugin-svelte'
-import resolve from 'rollup-plugin-node-resolve'
-import commonjs from 'rollup-plugin-commonjs'
+import commonjs from '@rollup/plugin-commonjs'
+import resolve from '@rollup/plugin-node-resolve'
+import pkg from './package.json'
+
+const name = pkg.name
+	.replace(/^(@\S+\/)?(svelte-)?(\S+)/, '$3')
+	.replace(/^\w/, m => m.toUpperCase())
+	.replace(/-\w/g, m => m[1].toUpperCase());
 
 export default {
-  input: 'example/src/main.js',
-  output: {
-    file: 'example/public/bundle.js',
-    format: 'iife'
-  },
-  plugins: [
-    svelte({
-      css: css => css.write('example/public/main.css')
-    }),
-    resolve(),
-    commonjs()
-  ]
+    input: 'src/index.js',
+    output: [
+		{ file: pkg.module, 'format': 'es' },
+		{ file: pkg.main, 'format': 'umd', name }
+    ],
+    plugins: [
+        svelte(),
+        resolve(),
+        commonjs()
+    ]
 }

@@ -1,48 +1,86 @@
-<script>
-  import UrlPattern from 'url-pattern'
-  import { getContext, onDestroy } from 'svelte'
-  import { writable } from 'svelte/store'
-  import createMatcher, {
-    ROUTER_CONTEXT,
-    path as currentPath,
-    navigate
-  } from './matcher.js'
+<script context="module">
+    import { setContext as _setContext, getContext as _getContext } from 'svelte'
 
-  export let path = ''
-  export let component
-  export let redirect
+    const key = Symbol()
 
-  const route = writable({ params: null })
-  const ctx = getContext(ROUTER_CONTEXT)
-  const base = ctx.base
-  ctx.register(route)
+    /**
+     * @returns import('./types').Context | undefined
+     */
+    export const getContext = _getContext.bind(undefined, key)
 
-  const _ctx = createMatcher()
-  onDestroy(() => {
-    ctx.unregister(route)
-    _ctx.destroy()
-  })
-
-  let _path
-  $: {
-    _path = path.startsWith('/') ? path : $base + path
-    _ctx.base.set(_path.replace(/\(?\/[^/]*\*[^/]*$/, '/'))
-  }
-  $: $route.pattern = path !== '' && new UrlPattern(_path)
-  $: if ($route.params !== null && redirect) navigate(redirect, true)
-  $: router = { params: $route.params, path: $currentPath }
-
-  let props = {}
-  $: {
-    const { path, component, ...rest } = $$props
-    props = rest
-  }
+    /**
+     * @param {import("./types").Context}
+     * @returns void
+     */
+    export const setContext = _setContext.bind(undefined, key)
 </script>
 
-{#if $route.params !== null}
-  {#if component}
-    <svelte:component this={component} {router} {...props} />
-  {:else}
-    <slot {router} />
-  {/if}
+<script>
+    import UrlPattern from 'url-pattern'
+    import pathname, { navigate, noMatch } from './path'
+    import Noop from './Noop.svelte'
+
+    import { tick } from 'svelte'
+
+    const context = getContext()
+
+    // for UrlPattern constructor
+    /** @type string | RegExp */
+    export let path = undefined
+    /** @type {import("./types").UrlPatternOptions} */
+    export let options = undefined
+    /** @type string[] */
+    export let groupNames = undefined
+
+    /** @type  typeof import("svelte").SvelteComponent */
+    export let component = undefined
+    /** @type string */
+    export let redirect = undefined
+    /** @type (params: object) => Promise<any>  */
+    export let resource = () => Promise.resolve()
+    export let decorator = context?.decorator
+    export let didLoad = context?.didLoad
+
+    /** @type Promise<any> */
+    let promise
+
+    // @ts-ignore
+    $: pattern = new UrlPattern(path, typeof path === 'string' ? options : groupNames)
+    /** @type any */
+    let params
+    $: params = pattern.match($pathname)
+
+    $: {
+        if (params !== null) {
+            $noMatch = false
+            if (redirect) navigate(redirect, true)
+            promise = resource(params)
+        }
+    }
+
+    $: promise?.then(tick).then(didLoad)
+
+    /**
+     * @param {any} data
+     * @returns {Router}
+     */
+    function router(data) {
+        return {
+            params,
+            data,
+            path: $pathname
+        }
+    }
+</script>
+
+{#if params !== null}
+    <svelte:component this={decorator ?? context?.decorator ?? Noop}>
+        {#await promise then data}
+            {#if component}
+                <svelte:component this={component} router={router(data)} {...$$restProps} />
+            {:else}
+                <slot router={router(data)} {...$$restProps} />
+            {/if}
+        {/await}
+    </svelte:component>
 {/if}

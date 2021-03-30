@@ -1,3 +1,2 @@
-node_modules/*
-example/public/bundle.js
-example/public/main.css*
+node_modules/
+dist/
