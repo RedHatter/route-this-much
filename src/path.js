@@ -1,20 +1,19 @@
-import { writable } from "svelte/store"
+import { writable, get } from "svelte/store"
 
-export const path = writable(window.location.pathname)
+export const pathname = writable(window.location.pathname)
 export const hash = writable(window.location.hash)
 export const noMatch = writable(true)
+export const hasPrevious = writable(false)
 
 // reset match
-path.subscribe(() => noMatch.set(true))
+pathname.subscribe(() => noMatch.set(true))
 
 function update() {
-    path.set(window.location.pathname)
+    pathname.set(window.location.pathname)
     hash.set(window.location.hash)
 }
 
 window.addEventListener("popstate", update)
-
-let hasPrevious = false
 
 /** @type {import("./types").OnNavigateCallback} */
 let on_navigate = () => true
@@ -34,14 +33,14 @@ export function onNavigate(fn) {
  */
 export function navigate(href, replace = false) {
     if (!on_navigate(href)) return
-    hasPrevious = true
+    hasPrevious.set(true)
     const fn = replace ? "replaceState" : "pushState"
     history[fn](null, "", href)
     update()
 }
 
 export function back() {
-    if (hasPrevious) history.back()
+    if (get(hasPrevious)) history.back()
     else navigate(window.location.pathname.replace(/[^/]+\/?$/, ""))
 }
 

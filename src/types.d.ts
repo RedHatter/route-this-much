@@ -1,10 +1,11 @@
 import type { SvelteComponent } from "svelte"
-import type Route from "./Route.svelte"
-import type Noop from "./Noop.svelte"
+import Route from "./Route.svelte"
+import Noop from "./Noop.svelte"
+import { pathname, hash, noMatch, onNavigate, navigate, back, hasPrevious } from "./path"
 
-export * from "./path"
-export * from "./Route.svelte"
-export { Route, Noop }
+export declare function getContext(): Context | undefined 
+export declare function setContext(context: Context): void
+export { Route, Noop, pathname, hash, noMatch, onNavigate, navigate, back, hasPrevious }
 
 export interface UrlPatternOptions {
     escapeChar?: string
