@@ -11,7 +11,9 @@
     "scripts": {
         "build": "rollup -c",
         "format": "prettier --write --plugin-search-dir=. ./**/*.{svelte,js,json} --no-semi --single-quote",
-        "prepare": "npm run build"
+        "prepare": "npm run build",
+        "version": "",
+        "postversion": "git push && git push --tags && npm publish"
     },
     "dependencies": {
         "url-pattern": "^1.0.3"
