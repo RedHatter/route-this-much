@@ -25,10 +25,10 @@
         "prettier-plugin-svelte": "^2.2.0",
         "rollup": "^2.44.0",
         "rollup-plugin-svelte": "^7.1.0",
-        "svelte": "^3.35.0"
+        "svelte": "^3.49.0"
     },
     "peerDependencies": {
-        "svelte": "^3.35.0"
+        "svelte": "^3.49.0"
     },
     "files": [
         "src",
